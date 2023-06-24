@@ -54,17 +54,31 @@ def train_model():
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import mean_absolute_error
     from sklearn.pipeline import Pipeline
-    from sklearn.preprocessing import MinMaxScaler
+    from sklearn.preprocessing import MinMaxScaler,OneHotEncoder
+    from sklearn.compose import ColumnTransformer
     global pred,X_train,y_train,text,text_input
 
     X_train,X_test,y_train,y_test=train_test_split(X,y,train_size=0.64,random_state=101,shuffle=True)
 
     model=KNeighborsClassifier(n_neighbors=1,n_jobs=5)
     model.fit(X_train,y_train)
-    # "20.57,10.38,77.58,1203.0,0.08474"
+    # text_input= [[20.57,10.38,77.58,1203.0,0.08474]]
     text_input=st.text_input("Gib die werte ein jeder einzelene Wert gefolgt vom ,")
+    # # ct=ColumnTransformer([("onehot",OneHotEncoder(),["onehot"])],remainder="passthrough")
+    # # ct.fit(text_input)
+    # # transformed=ct.transform(text_input)
+    # text_input=np.array(text_input)
+    # text_input=text_input.reshape(-1,1)
+    # text_input=float(input("Test"))
+    with open("test.txt","w") as f:
+        f.write(text_input)
+    with open("test.txt","r") as f:
+        text_input=f.read().split()
+
+        # # text_input=np.array(text_input)
+        # text_input=text_input.reshape(-1,1)    
     time.sleep(10)
-    pred=model.predict([[str(text_input)]])
+    pred=model.predict(np.array(text_input).reshape(-1,1))
     print(pred)
 
     if pred==1:
