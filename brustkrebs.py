@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import datetime as dt
+import time
 
 # path=[]
 # for dirname,_,filenames in os.walk('./Krebs/'):
@@ -54,20 +55,24 @@ def train_model():
     from sklearn.metrics import mean_absolute_error
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import MinMaxScaler
-    global pred,X_train,y_train,text
+    global pred,X_train,y_train,text,text_input
 
     X_train,X_test,y_train,y_test=train_test_split(X,y,train_size=0.64,random_state=101,shuffle=True)
 
     model=KNeighborsClassifier(n_neighbors=1,n_jobs=5)
     model.fit(X_train,y_train)
-    pred=model.predict([[20.57,10.38,77.58,1203.0,0.08474]])
+    # "20.57,10.38,77.58,1203.0,0.08474"
+    text_input=st.text_input("Gib die werte ein jeder einzelene Wert gefolgt vom ,")
+    time.sleep(10)
+    pred=model.predict([[str(text_input)]])
     print(pred)
+
     if pred==1:
         text="Aufgrund der angebenen Werte hättest du leider Krebs 😢"
     else:
         text="Keine Krebs"    
     pred=pd.DataFrame(pred,columns=["predction_oucomes"])
-    return pred
+    return pred,text_input
 
 
 
@@ -76,4 +81,5 @@ train_model()
 st.text(pred)
 st.dataframe(X_train)
 st.dataframe(pred)
+st.header(f"die eigebenen Werte{text_input}")
 st.title(text)
